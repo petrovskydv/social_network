@@ -48,3 +48,23 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class Post(models.Model):
+    title = models.CharField("Заголовок", max_length=200)
+    text = models.TextField("Текст")
+
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Автор",
+    )
+    likes = models.ManyToManyField(
+        User,
+        related_name="liked_posts",
+        verbose_name="Кто лайкнул",
+        blank=True
+    )
+
+    def __str__(self):
+        return self.title

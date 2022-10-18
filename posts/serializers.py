@@ -1,6 +1,7 @@
 from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 
-from posts.models import User
+from posts.models import User, Post
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,3 +17,12 @@ class UserSerializer(serializers.ModelSerializer):
             email=validated_data['email'], name=validated_data['name'], password=validated_data['password']
         )
         return user
+
+
+class PostSerializer(ModelSerializer):
+    """Serializes ProfileFeedItem model"""
+
+    class Meta:
+        model = Post
+        fields = ('id', 'title', 'text', 'author')
+        read_only_fields = ('author', 'id')
