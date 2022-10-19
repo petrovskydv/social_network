@@ -1,13 +1,19 @@
+import os
 from datetime import timedelta
 from pathlib import Path
 
+from environ import Env
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-$8nmtv3diqum8b!wv)b^xvb3_6!*zg4ksq7j=nojuta+45@(p='
+env = Env()
+env.read_env(os.path.join(BASE_DIR, '.env'))
 
-DEBUG = True
+SECRET_KEY = env.str('SECRET_KEY', 'django-insecure-!&v$$$ufjy64l$@(hm7h0cx9!=fok=n&f@bugx&t9uj+k(3_ro')
 
-ALLOWED_HOSTS = []
+DEBUG = env.bool('DEBUG', True)
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1'])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -53,10 +59,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'social_network.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db_url(
+        'DATABASE_URL',
+        default=f'sqlite:///{BASE_DIR}/db.sqlite3'
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -101,5 +107,4 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
-
 }
